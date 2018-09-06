@@ -1,5 +1,5 @@
 //
-//  Message.swift
+//  OneSignalMessage.swift
 //  OneSignal
 //
 //  Created by Anthony Castelli on 9/5/18.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Message: Codable {
+public struct OneSignalMessage: Codable {
     private var messages: [String : String]
     
     public init(_ message: String) {

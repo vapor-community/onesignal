@@ -1,5 +1,5 @@
 //
-//  Notification.swift
+//  OneSignalNotification.swift
 //  OneSignal
 //
 //  Created by Anthony Castelli on 9/5/18.
@@ -8,7 +8,7 @@
 import Foundation
 import Vapor
 
-public struct Notification: Codable {
+public struct OneSignalNotification: Codable {
     enum CodingKeys: CodingKey, String {
         case users = "users"
         
@@ -26,9 +26,9 @@ public struct Notification: Codable {
     
     public var users: [String]
     
-    public var title: Message?
-    public var subtitle: Message?
-    public var message: Message
+    public var title: OneSignalMessage?
+    public var subtitle: OneSignalMessage?
+    public var message: OneSignalMessage
     
     public var category: String?
     
@@ -38,27 +38,36 @@ public struct Notification: Codable {
     public var isContentMutable: Bool?
     
     public init(message: String) {
-        self.message = Message(message)
+        self.message = OneSignalMessage(message)
         self.users = []
     }
     
-    public init(message: Message) {
+    public init(message: OneSignalMessage) {
         self.message = message
         self.users = []
     }
     
     public init(message: String, users: [String]) {
-        self.message = Message(message)
+        self.message = OneSignalMessage(message)
         self.users = users
     }
     
-    public init(message: Message, users: [String]) {
+    public init(message: OneSignalMessage, users: [String]) {
         self.message = message
         self.users = users
     }
+    
+    public init(title: String, subtitle: String, message: String, users: [String], sound: String? = nil, catyegory: String? = nil) {
+        self.title = OneSignalMessage(title)
+        self.subtitle = OneSignalMessage(subtitle)
+        self.message = OneSignalMessage(message)
+        self.users = users
+        self.sound = sound
+        self.category = category
+    }
 }
 
-extension Notification {
+extension OneSignalNotification {
     public mutating func addUser(_ id: String) {
         self.users.append(id)
     }
@@ -68,20 +77,20 @@ extension Notification {
     }
 }
 
-extension Notification {
+extension OneSignalNotification {
     public mutating func setTitle(_ title: String) {
-        setTitle(Message(title))
+        self.setTitle(OneSignalMessage(title))
     }
     
-    public mutating func setTitle(_ message: Message) {
+    public mutating func setTitle(_ message: OneSignalMessage) {
         self.title = message
     }
     
     public mutating func setSubtitle(_ subtitle: String) {
-        self.setSubtitle(Message(subtitle))
+        self.setSubtitle(OneSignalMessage(subtitle))
     }
     
-    public mutating func setSubtitle(_ message: Message) {
+    public mutating func setSubtitle(_ message: OneSignalMessage) {
         self.subtitle = message
     }
 
@@ -94,7 +103,7 @@ extension Notification {
     }
 }
 
-extension Notification {
+extension OneSignalNotification {
     internal func generateRequest(on container: Container, for app: OneSignalApp) throws -> Request {
         let request = Request(using: container)
         request.http.method = .POST
@@ -102,7 +111,7 @@ extension Notification {
         request.http.headers.add(name: .connection, value: "Keep-Alive")
         request.http.headers.add(name: HTTPHeaderName("authorization"), value: "Basic \(app.apiKey)")
         
-        let payload = Payload(
+        let payload = OneSignalPayload(
             appId: app.appId,
             playerIds: self.users,
             contents: self.message,

@@ -1,5 +1,5 @@
 //
-//  Payload.swift
+//  OneSignalPayload.swift
 //  OneSignal
 //
 //  Created by Anthony Castelli on 9/5/18.
@@ -8,7 +8,7 @@
 import Foundation
 import Vapor
 
-struct Payload: Content {
+public struct OneSignalPayload: Content {
     enum CodingKeys: CodingKey, String {
         case appId = "appId"
         case playerIds = "include_player_ids"
@@ -21,16 +21,16 @@ struct Payload: Content {
         case mutableContent = "mutable_content"
     }
     
-    var appId: String
+    public var appId: String
 
-    var playerIds: [String]
+    public var playerIds: [String]
     
-    var contents: Message
+    public var contents: OneSignalMessage
     
-    var headings: Message?
-    var subtitle: Message?
+    public var headings: OneSignalMessage?
+    public var subtitle: OneSignalMessage?
     
-    var contentAvailable: Bool?
-    var mutableContent: Bool?
+    public var contentAvailable: Bool?
+    public var mutableContent: Bool?
 }
 

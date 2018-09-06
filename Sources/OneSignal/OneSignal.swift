@@ -22,7 +22,7 @@ public final class OneSignal: ServiceType {
     }
     
     /// Send the message
-    public func send(notification: Notification, toApp app: OneSignalApp) throws -> Future<OneSignalResult> {
+    public func send(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> Future<OneSignalResult> {
         return try self.client.send(notification.generateRequest(on: self.worker, for: app)).map(to: OneSignalResult.self) { response in
             guard let body = response.http.body.data, body.count != 0 else {
                 return OneSignalResult.success
@@ -31,7 +31,7 @@ public final class OneSignal: ServiceType {
         }
     }
 
-    public func sendRaw(notification: Notification, toApp app: OneSignalApp) throws -> Future<Response> {
+    public func sendRaw(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> Future<Response> {
         return try self.client.send(notification.generateRequest(on: self.worker, for: app))
     }
     
