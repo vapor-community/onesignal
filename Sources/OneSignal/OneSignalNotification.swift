@@ -57,10 +57,10 @@ public struct OneSignalNotification: Codable {
         self.users = users
     }
     
-    public init(title: String, subtitle: String, message: String, users: [String], sound: String? = nil, category: String? = nil) {
-        self.title = OneSignalMessage(title)
-        self.subtitle = OneSignalMessage(subtitle)
-        self.message = OneSignalMessage(message)
+    public init(title: String?, subtitle: String?, body: String, users: [String], sound: String? = nil, category: String? = nil) {
+        if let title = title { self.title = OneSignalMessage(title) }
+        if let subtitle = subtitle { self.subtitle = OneSignalMessage(subtitle) }
+        self.message = OneSignalMessage(body)
         self.users = users
         self.sound = sound
         self.category = category
