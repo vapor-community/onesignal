@@ -52,7 +52,7 @@ public struct Notification: Codable {
         self.users = users
     }
     
-    public init (message: Message, users: [String]) {
+    public init(message: Message, users: [String]) {
         self.message = message
         self.users = users
     }

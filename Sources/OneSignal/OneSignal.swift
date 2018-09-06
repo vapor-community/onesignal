@@ -16,7 +16,7 @@ public final class OneSignal: ServiceType {
         return try OneSignal(worker: worker)
     }
     
-    public init(worker: Container) throws{
+    public init(worker: Container) throws {
         self.worker = worker
         self.client = try FoundationClient.makeService(for: worker)
     }
