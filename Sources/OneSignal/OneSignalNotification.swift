@@ -114,9 +114,9 @@ extension OneSignalNotification {
         let payload = OneSignalPayload(
             appId: app.appId,
             playerIds: self.users,
-            contents: self.message,
-            headings: self.title,
-            subtitle: self.subtitle,
+            contents: self.message.messages,
+            headings: self.title?.messages,
+            subtitle: self.subtitle?.messages,
             contentAvailable: self.isContentAvailable,
             mutableContent: self.isContentMutable
         )

@@ -10,7 +10,7 @@ import Vapor
 
 public struct OneSignalPayload: Content {
     enum CodingKeys: CodingKey, String {
-        case appId = "appId"
+        case appId = "app_id"
         case playerIds = "include_player_ids"
         
         case contents = "contents"
@@ -25,10 +25,10 @@ public struct OneSignalPayload: Content {
 
     public var playerIds: [String]
     
-    public var contents: OneSignalMessage
+    public var contents: [String: String]
     
-    public var headings: OneSignalMessage?
-    public var subtitle: OneSignalMessage?
+    public var headings: [String: String]?
+    public var subtitle: [String: String]?
     
     public var contentAvailable: Bool?
     public var mutableContent: Bool?
