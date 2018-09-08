@@ -9,7 +9,7 @@ import Foundation
 import Vapor
 
 public struct OneSignalNotification: Codable {
-    enum CodingKeys: CodingKey, String {
+    enum CodingKeys: String, CodingKey {
         case users = "users"
         
         case title = "title"

@@ -8,7 +8,7 @@
 import Foundation
 
 public struct OneSignalApp: Codable {
-    enum CodingKeys: CodingKey, String {
+    enum CodingKeys: String, CodingKey {
         case apiKey = "api_key"
         case appId = "app_id"
     }

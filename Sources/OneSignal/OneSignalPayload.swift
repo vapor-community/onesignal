@@ -9,7 +9,7 @@ import Foundation
 import Vapor
 
 public struct OneSignalPayload: Content {
-    enum CodingKeys: CodingKey, String {
+    enum CodingKeys: String, CodingKey {
         case appId = "app_id"
         case playerIds = "include_player_ids"
         
