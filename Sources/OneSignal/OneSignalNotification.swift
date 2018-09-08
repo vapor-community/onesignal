@@ -10,13 +10,13 @@ import Vapor
 
 public struct OneSignalNotification: Codable {
     enum CodingKeys: String, CodingKey {
-        case users = "users"
+        case users
         
-        case title = "title"
-        case subtitle = "subtitle"
-        case message = "message"
+        case title
+        case subtitle
+        case message
         
-        case category = "category"
+        case category
         
         case sound = "ios_sound"
         
