@@ -109,7 +109,8 @@ extension OneSignalNotification {
         request.http.method = .POST
         
         request.http.headers.add(name: .connection, value: "Keep-Alive")
-        request.http.headers.add(name: HTTPHeaderName("authorization"), value: "Basic \(app.apiKey)")
+        request.http.headers.add(name: .authorization, value: "Basic \(app.apiKey)")
+        request.http.headers.add(name: .contentType, value: "applicaiton/json")
         
         let payload = OneSignalPayload(
             appId: app.appId,
@@ -121,8 +122,7 @@ extension OneSignalNotification {
             mutableContent: self.isContentMutable
         )
         
-        let encoder = JSONEncoder()
-        request.http.body = try HTTPBody(data: encoder.encode(payload))
+        try request.content.encode(payload)
         
         guard let url = URL(string: "https://onesignal.com/api/v1/notifications") else {
             throw OneSignalError.invalidURL
