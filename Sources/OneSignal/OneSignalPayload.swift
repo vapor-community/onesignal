@@ -12,7 +12,8 @@ public struct OneSignalPayload: Content {
     enum CodingKeys: String, CodingKey {
         case appId = "app_id"
         case playerIds = "include_player_ids"
-        
+        case iosDeviceTokens = "include_ios_tokens"
+
         case contents = "contents"
         case headings = "headings"
         case subtitle = "subtitle"
@@ -24,7 +25,8 @@ public struct OneSignalPayload: Content {
     public var appId: String
 
     public var playerIds: [String]
-    
+    public var iosDeviceTokens: [String]
+
     public var contents: [String: String]
     
     public var headings: [String: String]?

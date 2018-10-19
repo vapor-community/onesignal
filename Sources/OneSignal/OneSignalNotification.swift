@@ -11,6 +11,7 @@ import Vapor
 public struct OneSignalNotification: Codable {
     enum CodingKeys: String, CodingKey {
         case users
+        case iosDeviceTokens
         
         case title
         case subtitle
@@ -24,7 +25,8 @@ public struct OneSignalNotification: Codable {
         case isContentMutable = "mutable_content"
     }
     
-    public var users: [String]
+    public var users: [String]? = []
+    public var iosDeviceTokens: [String]? = []
     
     public var title: OneSignalMessage?
     public var subtitle: OneSignalMessage?
@@ -57,11 +59,17 @@ public struct OneSignalNotification: Codable {
         self.users = users
     }
     
-    public init(title: String?, subtitle: String?, body: String, users: [String], sound: String? = nil, category: String? = nil) {
+    public init(message: OneSignalMessage, iosDeviceTokens: [String]) {
+        self.message = message
+        self.iosDeviceTokens = iosDeviceTokens
+    }
+    
+    public init(title: String?, subtitle: String?, body: String, users: [String]?, iosDeviceTokens: [String]?, sound: String? = nil, category: String? = nil) {
         if let title = title { self.title = OneSignalMessage(title) }
         if let subtitle = subtitle { self.subtitle = OneSignalMessage(subtitle) }
         self.message = OneSignalMessage(body)
         self.users = users
+        self.iosDeviceTokens = iosDeviceTokens
         self.sound = sound
         self.category = category
     }
@@ -69,7 +77,8 @@ public struct OneSignalNotification: Codable {
 
 extension OneSignalNotification {
     public mutating func addUser(_ id: String) {
-        self.users.append(id)
+        guard var users = users else { return }
+        users.append(id)
     }
     
     public mutating func addMessage(_ message: String, language: String = "en") {
@@ -114,7 +123,8 @@ extension OneSignalNotification {
         
         let payload = OneSignalPayload(
             appId: app.appId,
-            playerIds: self.users,
+            playerIds: self.users ?? [],
+            iosDeviceTokens: self.iosDeviceTokens ?? [],
             contents: self.message.messages,
             headings: self.title?.messages,
             subtitle: self.subtitle?.messages,
