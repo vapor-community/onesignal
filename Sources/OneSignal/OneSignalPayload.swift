@@ -18,6 +18,13 @@ public struct OneSignalPayload: Content {
         case headings = "headings"
         case subtitle = "subtitle"
         
+        case category = "ios_category"
+        
+        case sound = "ios_sound"
+        case sendAfter = "send_after"
+        case additionalData = "data"
+        case attachments = "ios_attachments"
+        
         case contentAvailable = "content_available"
         case mutableContent = "mutable_content"
     }
@@ -25,12 +32,18 @@ public struct OneSignalPayload: Content {
     public var appId: String
 
     public var playerIds: [String]
-    public var iosDeviceTokens: [String]
+    public var iosDeviceTokens: [String]?
 
     public var contents: [String: String]
     
     public var headings: [String: String]?
     public var subtitle: [String: String]?
+    
+    public var category: String?
+    public var sound: String?
+    public var sendAfter: String?
+    public var additionalData: [String : String]?
+    public var attachments: [String : String]?
     
     public var contentAvailable: Bool?
     public var mutableContent: Bool?
