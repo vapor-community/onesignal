@@ -29,12 +29,20 @@ public struct OneSignalNotification: Codable {
     }
     
     /**
- 
+     RECOMMENDED - Specific players to send your notification to. Does not require API Auth Key.
+     Do not combine with other targeting parameters. Not compatible with any other targeting parameters.
+     
+     Example: `["1dd608f2-c6a1-11e3-851d-000c2940e62c"]`
      */
     public var users: [String] = []
     
     /**
+     NOT RECOMMENDED - Please consider using include_player_ids instead.
+     Target using iOS device tokens. Warning: Only works with Production tokens.
+     All non-alphanumeric characters must be removed from each token. If a token does not correspond
+     to an existing user, a new user will be created.
      
+     Example: `ce777617da7f548fe7a9ab6febb56cf39fba6d38203...`
      */
     public var deviceTokens: [String]?
     
@@ -83,7 +91,7 @@ public struct OneSignalNotification: Codable {
      Pass nil to disable vibration and sound for the notification.
      
      Example: `"notification.wav"`
-    */
+     */
     public var sound: String?
     
     /**
@@ -100,9 +108,9 @@ public struct OneSignalNotification: Codable {
     
     /**
      A custom map of data that is passed back to your app.
-
+     
      Example: `{"abc": "123", "foo": "bar"}`
-    */
+     */
     public var additionalData: [String : String]?
     
     /**
@@ -119,13 +127,13 @@ public struct OneSignalNotification: Codable {
      
      Note: Not applicable if the app is in the "force-quit" state (i.e app was swiped away).
      Omit the contents field to prevent displaying a visible notification.
-    */
+     */
     public var isContentAvailable: Bool?
     
     /**
      Sending true allows you to change the notification content in your app before it is displayed.
      Triggers `didReceive(_:withContentHandler:)` on your `UNNotificationServiceExtension.`
-    */
+     */
     public var isContentMutable: Bool?
     
     
@@ -149,13 +157,16 @@ public struct OneSignalNotification: Codable {
         self.users = users
     }
     
-    public init(title: String?, subtitle: String?, body: String, users: [String], sound: String? = nil, category: String? = nil, ) {
+    public init(title: String?, subtitle: String?, body: String, users: [String], deviceTokens: [String]? = nil, sound: String? = nil, category: String? = nil, sendAfter: String? = nil, additionalData: [String : String]? = nil, attachments: [String : String]? = nil) {
         if let title = title { self.title = OneSignalMessage(title) }
         if let subtitle = subtitle { self.subtitle = OneSignalMessage(subtitle) }
         self.message = OneSignalMessage(body)
         self.users = users
         self.sound = sound
         self.category = category
+        self.sendAfter = sendAfter
+        self.additionalData = additionalData
+        self.attachments = attachments
     }
 }
 
@@ -185,7 +196,7 @@ extension OneSignalNotification {
     public mutating func setSubtitle(_ message: OneSignalMessage) {
         self.subtitle = message
     }
-
+    
     public mutating func setContentAvailable(_ isContentAvailable: Bool?) {
         self.isContentAvailable = isContentAvailable
     }
