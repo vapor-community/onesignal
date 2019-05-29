@@ -213,7 +213,7 @@ extension OneSignalNotification {
         
         request.http.headers.add(name: .connection, value: "Keep-Alive")
         request.http.headers.add(name: .authorization, value: "Basic \(app.apiKey)")
-        request.http.headers.add(name: .contentType, value: "applicaiton/json")
+        request.http.headers.add(name: .contentType, value: "application/json")
         
         let payload = OneSignalPayload(
             appId: app.appId,
