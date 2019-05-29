@@ -22,8 +22,8 @@ public final class OneSignal: ServiceType {
     }
     
     /// Send the message
-    public func send(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> Future<OneSignalResult> {
-        return try self.client.send(notification.generateRequest(on: self.worker, for: app)).map(to: OneSignalResult.self) { response in
+    public func send(notification: OneSignalNotification, toApp app: OneSignalApp, method: OneSignalNotification.Method) throws -> Future<OneSignalResult> {
+        return try self.client.send(notification.generateRequest(on: self.worker, for: app, method: method)).map(to: OneSignalResult.self) { response in
             guard let body = response.http.body.data else {
                 return OneSignalResult.error(error: OneSignalError.internal)
             }
@@ -38,8 +38,8 @@ public final class OneSignal: ServiceType {
         }
     }
     
-    public func sendRaw(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> Future<Response> {
-        return try self.client.send(notification.generateRequest(on: self.worker, for: app))
+    public func sendRaw(notification: OneSignalNotification, toApp app: OneSignalApp, method: OneSignalNotification.Method) throws -> Future<Response> {
+        return try self.client.send(notification.generateRequest(on: self.worker, for: app, method: method))
     }
     
 }

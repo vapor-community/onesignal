@@ -13,6 +13,8 @@ public struct OneSignalPayload: Content {
         case appId = "app_id"
         case playerIds = "include_player_ids"
         case iosDeviceTokens = "include_ios_tokens"
+        case segments = "included_segments"
+        case excludedSegments = "excluded_segments"
 
         case contents = "contents"
         case headings = "headings"
@@ -30,12 +32,13 @@ public struct OneSignalPayload: Content {
     }
     
     public var appId: String
-
-    public var playerIds: [String]
-    public var iosDeviceTokens: [String]?
-
-    public var contents: [String: String]
     
+    public var playerIds: [String]?
+    public var iosDeviceTokens: [String]?
+    public var segments: [String]?
+    public var excludedSegments: [String]?
+    
+    public var contents: [String: String]
     public var headings: [String: String]?
     public var subtitle: [String: String]?
     

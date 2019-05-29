@@ -9,10 +9,43 @@ import Foundation
 import Vapor
 
 public struct OneSignalNotification: Codable {
+    public enum Method {
+        case players(_ playersId: [String], iosDeviceTokens: [String]?)
+        /**
+         playersId: [String]
+         RECOMMENDED - Specific players to send your notification to. Does not require API Auth Key.
+         Do not combine with other targeting parameters. Not compatible with any other targeting parameters.
+         
+         Example: `["1dd608f2-c6a1-11e3-851d-000c2940e62c"]`
+         
+         iosDeviceTokens: [String]?
+         NOT RECOMMENDED - Please consider using include_player_ids instead.
+         Target using iOS device tokens. Warning: Only works with Production tokens.
+         All non-alphanumeric characters must be removed from each token. If a token does not correspond
+         to an existing user, a new user will be created.
+         
+         Example: `ce777617da7f548fe7a9ab6febb56cf39fba6d38203...`
+         */
+
+        case segments(_ included: [String], excluded: [String]?)
+        /**
+         included: [String]
+         The segment names you want to target.
+         Users in these segments will receive a notification.
+         This targeting parameter is only compatible with excluded_segments.
+ 
+         Example: ["Active Users", "Inactive Users"]
+         
+         excluded: [String]?
+         Segment that will be excluded when sending.
+         Users in these segments will not receive a notification, even if they were included in included_segments.
+         This targeting parameter is only compatible with included_segments.
+         
+         Example: ["Active Users", "Inactive Users"]
+         */
+    }
+    
     enum CodingKeys: String, CodingKey {
-        case users
-        case deviceTokens
-        
         case title
         case subtitle
         case message
@@ -27,24 +60,6 @@ public struct OneSignalNotification: Codable {
         case isContentAvailable = "content_available"
         case isContentMutable = "mutable_content"
     }
-    
-    /**
-     RECOMMENDED - Specific players to send your notification to. Does not require API Auth Key.
-     Do not combine with other targeting parameters. Not compatible with any other targeting parameters.
-     
-     Example: `["1dd608f2-c6a1-11e3-851d-000c2940e62c"]`
-     */
-    public var users: [String] = []
-    
-    /**
-     NOT RECOMMENDED - Please consider using include_player_ids instead.
-     Target using iOS device tokens. Warning: Only works with Production tokens.
-     All non-alphanumeric characters must be removed from each token. If a token does not correspond
-     to an existing user, a new user will be created.
-     
-     Example: `ce777617da7f548fe7a9ab6febb56cf39fba6d38203...`
-     */
-    public var deviceTokens: [String]?
     
     /**
      The notification's title, a map of language codes to text for each language. Each hash must have a language
@@ -139,29 +154,16 @@ public struct OneSignalNotification: Codable {
     
     public init(message: String) {
         self.message = OneSignalMessage(message)
-        self.users = []
     }
     
     public init(message: OneSignalMessage) {
         self.message = message
-        self.users = []
     }
     
-    public init(message: String, users: [String]) {
-        self.message = OneSignalMessage(message)
-        self.users = users
-    }
-    
-    public init(message: OneSignalMessage, users: [String]) {
-        self.message = message
-        self.users = users
-    }
-    
-    public init(title: String?, subtitle: String?, body: String, users: [String], deviceTokens: [String]? = nil, sound: String? = nil, category: String? = nil, sendAfter: String? = nil, additionalData: [String : String]? = nil, attachments: [String : String]? = nil) {
+    public init(title: String?, subtitle: String?, body: String, sound: String? = nil, category: String? = nil, sendAfter: String? = nil, additionalData: [String : String]? = nil, attachments: [String : String]? = nil) {
         if let title = title { self.title = OneSignalMessage(title) }
         if let subtitle = subtitle { self.subtitle = OneSignalMessage(subtitle) }
         self.message = OneSignalMessage(body)
-        self.users = users
         self.sound = sound
         self.category = category
         self.sendAfter = sendAfter
@@ -171,10 +173,6 @@ public struct OneSignalNotification: Codable {
 }
 
 extension OneSignalNotification {
-    public mutating func addUser(_ id: String) {
-        self.users.append(id)
-    }
-    
     public mutating func addMessage(_ message: String, language: String = "en") {
         self.message[language] = message
     }
@@ -207,7 +205,7 @@ extension OneSignalNotification {
 }
 
 extension OneSignalNotification {
-    internal func generateRequest(on container: Container, for app: OneSignalApp) throws -> Request {
+    internal func generateRequest(on container: Container, for app: OneSignalApp, method: Method) throws -> Request {
         let request = Request(using: container)
         request.http.method = .POST
         
@@ -215,10 +213,30 @@ extension OneSignalNotification {
         request.http.headers.add(name: .authorization, value: "Basic \(app.apiKey)")
         request.http.headers.add(name: .contentType, value: "applicaiton/json")
         
+        let playerIds: [String]?
+        let iosDeviceTokens: [String]?
+        let segments: [String]?
+        let excludedSegments: [String]?
+        
+        switch method {
+        case let .players(ids, tokens):
+            playerIds = ids
+            iosDeviceTokens = tokens
+            segments = nil
+            excludedSegments = nil
+        case let .segments(included, excluded):
+            segments = included
+            excludedSegments = excluded
+            playerIds = nil
+            iosDeviceTokens = nil
+        }
+        
         let payload = OneSignalPayload(
             appId: app.appId,
-            playerIds: self.users,
-            iosDeviceTokens: self.deviceTokens,
+            playerIds: playerIds,
+            iosDeviceTokens: iosDeviceTokens,
+            segments: segments,
+            excludedSegments: excludedSegments,
             contents: self.message.messages,
             headings: self.title?.messages,
             subtitle: self.subtitle?.messages,
