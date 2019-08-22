@@ -12,10 +12,10 @@ public struct OneSignalApp: Codable {
         case apiKey = "api_key"
         case appId = "app_id"
     }
-    
+
     public var apiKey: String
     public var appId: String
-    
+
     public init(apiKey: String, appId: String) {
         self.apiKey = apiKey
         self.appId = appId
