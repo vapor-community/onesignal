@@ -1,6 +1,7 @@
 # file options
 
 --exclude .build
+--exclude Tests/OneSignalTests/XCTestManifests.swift
 
 # format options
 
