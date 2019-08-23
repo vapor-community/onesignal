@@ -13,5 +13,6 @@ let message = OneSignalMessage("Hello Vapor!")
 let notif = OneSignalNotification(message: message, users: deviceTokens)
 let app = OneSignalApp(apiKey: apiKey, appId: appId)
 
-let resultFuture = try OneSignal().send(notification: notif, toApp: app)
+let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
+let resultFuture = try OneSignal(on: eventLoop).send(notification: notif, toApp: app)
 ```

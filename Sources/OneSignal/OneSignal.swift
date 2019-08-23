@@ -12,8 +12,12 @@ import NIO
 public final class OneSignal {
     let httpClient: HTTPClient
 
-    public init(httpClient: HTTPClient? = nil) {
-        self.httpClient = httpClient ?? HTTPClient(eventLoopGroupProvider: .createNew)
+    public init(httpClient: HTTPClient) {
+        self.httpClient = httpClient
+    }
+
+    public init(on eventLoop: EventLoop) {
+        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoop))
     }
 
     deinit {
