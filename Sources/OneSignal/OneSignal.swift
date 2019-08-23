@@ -16,6 +16,10 @@ public final class OneSignal {
         self.httpClient = httpClient ?? HTTPClient(eventLoopGroupProvider: .createNew)
     }
 
+    deinit {
+        try? httpClient.syncShutdown()
+    }
+
     /// Send the message
     public func send(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> EventLoopFuture<OneSignalResult> {
         return try self.sendRaw(notification: notification, toApp: app).map { response in
