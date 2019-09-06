@@ -4,31 +4,34 @@
 //
 //  Created by Anthony Castelli on 9/5/18.
 //
-import Foundation
-import Vapor
 
-public final class OneSignal: ServiceType {
-    
-    var worker: Container
-    var client: FoundationClient
-    
-    public static func makeService(for worker: Container) throws -> OneSignal {
-        return try OneSignal(worker: worker)
+import AsyncHTTPClient
+import Foundation
+import NIO
+
+public final class OneSignal {
+    let httpClient: HTTPClient
+
+    public init(httpClient: HTTPClient) {
+        self.httpClient = httpClient
     }
-    
-    public init(worker: Container) throws {
-        self.worker = worker
-        self.client = try FoundationClient.makeService(for: worker)
+
+    public init(on eventLoop: EventLoop) {
+        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoop))
     }
-    
+
+    deinit {
+        try? httpClient.syncShutdown()
+    }
+
     /// Send the message
-    public func send(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> Future<OneSignalResult> {
-        return try self.client.send(notification.generateRequest(on: self.worker, for: app)).map(to: OneSignalResult.self) { response in
-            guard let body = response.http.body.data else {
+    public func send(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> EventLoopFuture<OneSignalResult> {
+        return try self.sendRaw(notification: notification, toApp: app).map { response in
+            guard var responseBody = response.body, let body = responseBody.readBytes(length: responseBody.readableBytes) else {
                 return OneSignalResult.error(error: OneSignalError.internal)
             }
-            
-            guard response.http.status == .ok else {
+
+            guard response.status == .ok else {
                 if let message = String(bytes: body, encoding: .utf8) {
                     return OneSignalResult.error(error: OneSignalError.requestError(value: message))
                 }
@@ -37,9 +40,8 @@ public final class OneSignal: ServiceType {
             return OneSignalResult.success
         }
     }
-    
-    public func sendRaw(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> Future<Response> {
-        return try self.client.send(notification.generateRequest(on: self.worker, for: app))
+
+    public func sendRaw(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> EventLoopFuture<HTTPClient.Response> {
+        return try self.httpClient.execute(request: notification.generateRequest(for: app))
     }
-    
 }

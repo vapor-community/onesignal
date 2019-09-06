@@ -8,13 +8,13 @@
 import Foundation
 
 public struct OneSignalMessage: Codable {
-    internal var messages: [String : String]
-    
+    internal var messages: [String: String]
+
     public init(_ message: String) {
         // English is required by `OneSignal`
         self.messages = ["en": message]
     }
-    
+
     public subscript(key: String) -> String? {
         get {
             return self.messages[key]

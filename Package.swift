@@ -1,4 +1,4 @@
-// swift-tools-version:4.0
+// swift-tools-version:5.0
 // Managed by ice
 
 import PackageDescription
@@ -9,10 +9,10 @@ let package = Package(
         .library(name: "OneSignal", targets: ["OneSignal"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0")
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.0.0-alpha.1"),
     ],
     targets: [
-        .target(name: "OneSignal", dependencies: ["Vapor"]),
+        .target(name: "OneSignal", dependencies: ["AsyncHTTPClient"]),
         .testTarget(name: "OneSignalTests", dependencies: ["OneSignal"]),
     ]
 )

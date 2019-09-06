@@ -1,0 +1,13 @@
+# file options
+
+--exclude .build
+--exclude Tests/OneSignalTests/XCTestManifests.swift
+
+# format options
+
+--self insert
+--patternlet inline
+--stripunusedargs unnamed-only
+--comments ignore
+
+# rules
