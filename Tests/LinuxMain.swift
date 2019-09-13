@@ -3,5 +3,6 @@ import XCTest
 import OneSignalTests
 
 var tests = [XCTestCaseEntry]()
-tests += OneSignalTests.allTests()
+tests += OneSignalTests.__allTests()
+
 XCTMain(tests)

@@ -5,10 +5,10 @@
 //  Created by Anthony Castelli on 9/5/18.
 //
 
+import AsyncHTTPClient
 import Foundation
-import Vapor
 
-public struct OneSignalPayload: Content {
+public struct OneSignalPayload: Encodable {
     enum CodingKeys: String, CodingKey {
         case appId = "app_id"
         case playerIds = "include_player_ids"
@@ -16,21 +16,21 @@ public struct OneSignalPayload: Content {
         case segments = "included_segments"
         case excludedSegments = "excluded_segments"
 
-        case contents = "contents"
-        case headings = "headings"
-        case subtitle = "subtitle"
-        
+        case contents
+        case headings
+        case subtitle
+
         case category = "ios_category"
-        
+
         case sound = "ios_sound"
         case sendAfter = "send_after"
         case additionalData = "data"
         case attachments = "ios_attachments"
-        
+
         case contentAvailable = "content_available"
         case mutableContent = "mutable_content"
     }
-    
+
     public var appId: String
     
     public var playerIds: [String]?
@@ -41,14 +41,13 @@ public struct OneSignalPayload: Content {
     public var contents: [String: String]
     public var headings: [String: String]?
     public var subtitle: [String: String]?
-    
+
     public var category: String?
     public var sound: String?
     public var sendAfter: String?
-    public var additionalData: [String : String]?
-    public var attachments: [String : String]?
-    
+    public var additionalData: [String: String]?
+    public var attachments: [String: String]?
+
     public var contentAvailable: Bool?
     public var mutableContent: Bool?
 }
-
