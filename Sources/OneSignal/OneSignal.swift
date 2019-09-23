@@ -25,9 +25,9 @@ public final class OneSignal {
     }
 
     /// Send the message
-    public func send(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> EventLoopFuture<OneSignalResult> {
-        return try self.sendRaw(notification: notification, toApp: app).map { response in
-            guard var responseBody = response.body, let body = responseBody.readBytes(length: responseBody.readableBytes) else {
+    public func send(notification: OneSignalNotification, toApp app: OneSignalApp, method: OneSignalNotification.Method) throws -> Future<OneSignalResult> {
+        return try self.client.send(notification.generateRequest(on: self.worker, for: app, method: method)).map(to: OneSignalResult.self) { response in
+            guard let body = response.http.body.data else {
                 return OneSignalResult.error(error: OneSignalError.internal)
             }
 
@@ -41,7 +41,7 @@ public final class OneSignal {
         }
     }
 
-    public func sendRaw(notification: OneSignalNotification, toApp app: OneSignalApp) throws -> EventLoopFuture<HTTPClient.Response> {
-        return try self.httpClient.execute(request: notification.generateRequest(for: app))
+    public func sendRaw(notification: OneSignalNotification, toApp app: OneSignalApp, method: OneSignalNotification.Method) throws -> Future<Response> {
+        return try self.client.send(notification.generateRequest(on: self.worker, for: app, method: method))
     }
 }
