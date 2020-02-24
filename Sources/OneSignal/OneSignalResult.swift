@@ -14,9 +14,10 @@ public enum OneSignalError: Swift.Error {
     case apiKeyNotSet
     case appIDNotSet
     case requestError(value: String)
+    case decodingError
 }
 
-public enum OneSignalResult: ResponseCodable {
+public enum OneSignalResult {
     case success
     case error(error: OneSignalError)
     case networkError(error: Error)
