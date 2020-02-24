@@ -1,15 +1,18 @@
-// swift-tools-version:4.0
+// swift-tools-version:5.0
 // Managed by ice
 
 import PackageDescription
 
 let package = Package(
     name: "OneSignal",
+    platforms: [
+        .macOS(.v10_14)
+    ],
     products: [
         .library(name: "OneSignal", targets: ["OneSignal"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0")
+        .package(url: "https://github.com/vapor/vapor.git", from: "3.3.0")
     ],
     targets: [
         .target(name: "OneSignal", dependencies: ["Vapor"]),
