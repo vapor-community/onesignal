@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Vapor
 
 public enum OneSignalError: Swift.Error {
     case `internal`
@@ -15,7 +16,7 @@ public enum OneSignalError: Swift.Error {
     case requestError(value: String)
 }
 
-public enum OneSignalResult {
+public enum OneSignalResult: ResponseCodable {
     case success
     case error(error: OneSignalError)
     case networkError(error: Error)
