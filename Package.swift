@@ -5,9 +5,6 @@ import PackageDescription
 
 let package = Package(
     name: "OneSignal",
-    platforms: [
-        .macOS(.v10_14)
-    ],
     products: [
         .library(name: "OneSignal", targets: ["OneSignal"]),
     ],
