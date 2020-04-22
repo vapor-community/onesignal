@@ -11,3 +11,11 @@ let notif = OneSignalNotification(message: message, iosDeviceTokens: [deviceToke
 let app = OneSignalApp(apiKey: Environment.get("ONESIGNAL_API_KEY") ?? "", appId: Environment.get("ONESIGNAL_APP_ID") ?? "")
 let result = try OneSignal.makeService(for: request).send(notification: notif, toApp: app)
 ```
+
+
+# OneSignal (Vapor 4 Upgrade)
+
+Request to convert OneSignal to be compatible with Vapor 4
+
+```new updated code/example
+```
